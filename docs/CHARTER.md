@@ -1,38 +1,33 @@
-# Project Charter — CUMALATOR
+# PROJECT CHARTER — CUMALATOR
 
-## Masalah
-Setelah nilai semester keluar di portal kampus, mahasiswa menghitung IPK
-sendiri dengan kalkulator atau kertas. Perhitungan manual itu sering salah
-(bobot nilai tertukar, SKS terlewat), dan kesalahannya baru ketahuan belakangan.
+## 1. Masalah yang Diselesaikan
+Mahasiswa sering kesulitan memprediksi dan memantau perolehan IPK secara cepat dan efisien sebelum semester berakhir, sehingga sering salah memperkirakan strategi perbaikan nilai.
 
-## Pengguna sasaran
-Amoy, mahasiswa D3 semester 3. Setiap nilai semester keluar, ia membuka
-portal kampus lalu menghitung IPK-nya sendiri di kalkulator HP: mengalikan
-SKS dengan bobot tiap nilai satu per satu. Ia sering lupa bobot nilai
-tertentu dan salah menjumlah, sehingga ragu apakah angkanya benar. Ia
-membutuhkan IPK yang pasti sebelum mengurus syarat beasiswa dan KRS.
+## 2. Pengguna Sasaran & Persona
+- **Nama Persona**: Tari (20 tahun)
+- **Profil**: Mahasiswa semester 3 D3 Multimedia dan Broadcasting dengan jadwal praktikum padat.
+- **Keseharian**: Sering mengelola nilai mata kuliah di sela-sela pengerjaan tugas proyek media.
+- **Masalah Utama**: Merasa ribet jika harus menghitung IPK secara manual memakai kalkulator biasa atau membuat rumus spreadsheet dari nol setiap kali ingin simulasi nilai.
 
-## Fitur MVP (MoSCoW)
-| Fitur | Prioritas |
-|---|---|
-| Hitung IPK dari SKS dan nilai tiap mata kuliah | Must |
-| Tambah dan ubah daftar mata kuliah | Must |
-| Simpan data otomatis di browser | Should |
-| Riwayat perhitungan IPK | Should |
-| Halaman panduan bobot nilai | Could |
-| Login dan tarik nilai otomatis dari portal kampus | **Won't** (belum menguji nilai utama) |
+## 3. Fitur MVP (MoSCoW)
+- **Must Have**:
+  - Input jumlah SKS dan pilihan nilai huruf untuk setiap mata kuliah.
+  - Perhitungan otomatis total SKS, total bobot, dan hasil akhir IPK.
+  - Tambah dan hapus baris mata kuliah secara dinamis.
+- **Should Have**:
+  - Penyimpanan otomatis data input dan riwayat hasil perhitungan di penyimpanan lokal browser (`localStorage`).
+- **Could Have**:
+  - Tampilan tabel panduan bobot nilai akademik dan transisi halaman interaktif.
+- **Won't Have (Sengaja Tidak Dibuat di MVP)**:
+  - Fitur login/autentikasi pengguna dan integrasi server basis data (fokus utama adalah alat kalkulator cepat tanpa hambatan pendaftaran akun).
 
-## Kriteria sukses
-- Pengguna baru menghitung IPK 5 mata kuliah dalam ≤ 2 menit tanpa bantuan.
-- Hasil aplikasi sama dengan hitungan manual pada 5 dari 5 contoh uji.
-- Seluruh alur utama bisa dipakai di layar ±400 px.
+## 4. Kriteria Sukses Terukur
+- Pengguna baru dapat memasukkan minimal 5 mata kuliah dan melihat hasil perhitungan IPK dalam waktu **≤ 1,5 menit** tanpa membutuhkan panduan/bantuan.
 
-## Risiko dan antisipasi
-| Risiko | Antisipasi |
-|---|---|
-## Risiko dan antisipasi
-| Risiko | Antisipasi |
-|---|---|
-| Skala nilai aplikasi (ada B-, C+; A- = 3,7; B+ = 3,3) berbeda dengan kampus (ada AB, BC; A- = 3,75; B+ = 3,25), sehingga IPK tidak sama dengan portal | Sesuaikan daftar nilai dan bobot dengan aturan kampus (Sprint P10) |
-| Data hilang saat cache browser dibersihkan | Tambah ekspor data (Sprint P12) |
-| Input tidak valid (SKS kosong atau nama mengandung karakter aneh) | Perketat validasi dan escape input (Sprint P10) |
+## 5. Analisis Risiko & Antisipasi
+1. **Risiko**: Data input atau riwayat hilang ketika pengguna membersihkan *cache/cookies* browser.
+   - *Antisipasi*: Memberikan opsi ekspor data JSON atau peringatan di indikator simpan.
+2. **Risiko**: Pengguna salah memasukkan format input SKS (misal: SKS bernilai negatif atau nol).
+   - *Antisipasi*: Menggunakan atribut validasi HTML (`type="number"`, `min="1"`, `max="6"`).
+3. **Risiko**: Tampilan tabel acak-acakan saat dibuka di layar HP yang sempit.
+   - *Antisipasi*: Membungkus tabel dengan komponen `table-responsive` dari Bootstrap.
