@@ -1,396 +1,184 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CUMALATOR</title>
+  <title>CUMALATOR — Hitung IPK</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="src/style.css">
-  <script src="src/script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="src/script.js"></script>
 </head>
 
 <body>
-  <div class="wrap">
+  <div class="bobot-tip" id="tooltip"></div>
 
-    <!-- Header -->
-    <header class="app-header">
-      <h1>CUMALATOR</h1>
-      <p class="subtitle">
-        Bantu pantau hasil akademikmu dengan lebih mudah.
-      </p>
+  <div class="container py-4">
+    <header class="text-center mb-4">
+      <h1 class="fw-bold">CUMALATOR</h1>
+      <p class="text-muted">Bantu pantau hasil akademikmu dengan lebih mudah.</p>
     </header>
 
-    <!-- Navigasi -->
-    <nav class="main-nav" aria-label="Navigasi utama">
-      <button
-        type="button"
-        class="nav-btn active"
-        data-view="calculatorView"
-        aria-current="page"
-      >
-        <span aria-hidden="true">▦</span>
-        Kalkulator
-      </button>
-
-      <button
-        type="button"
-        class="nav-btn"
-        data-view="guideView"
-      >
-        <span aria-hidden="true">▤</span>
-        Panduan Nilai
-      </button>
-
-      <button
-        type="button"
-        class="nav-btn"
-        data-view="aboutView"
-      >
-        <span aria-hidden="true">ⓘ</span>
-        Tentang
-      </button>
+    <nav class="d-flex justify-content-center gap-2 mb-4">
+      <button type="button" class="nav-btn btn active" data-view="calculatorView">Kalkulator</button>
+      <button type="button" class="nav-btn btn" data-view="guideView">Panduan Nilai</button>
+      <button type="button" class="nav-btn btn" data-view="aboutView">Tentang</button>
     </nav>
 
-    <!-- Konten utama -->
     <main>
-
-      <!-- Halaman Kalkulator -->
+      <!-- Menu Kalkulator -->
       <section class="app-view active" id="calculatorView">
         <form id="ipkForm">
-          <div class="card">
-            <h2>Daftar Mata Kuliah</h2>
+          <div class="card shadow-sm mb-4">
+            <div class="card-body">
+              <h2 class="h5 fw-bold mb-2">Daftar Mata Kuliah</h2>
+              <p class="text-muted small mb-3">Masukkan jumlah SKS dan nilai setiap mata kuliah.</p>
 
-            <p class="section-desc">
-              Masukkan jumlah SKS dan nilai setiap mata kuliah.
-            </p>
+              <div class="table-responsive">
+                <table class="table align-middle">
+                  <thead>
+                    <tr>
+                      <th class="col-nama">Mata Kuliah</th>
+                      <th>SKS</th>
+                      <th>Nilai</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableBody"></tbody>
+                </table>
+              </div>
 
-            <div class="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th class="col-nama">Mata Kuliah</th>
-                    <th>SKS</th>
-                    <th>Nilai</th>
-                    <th></th>
-                  </tr>
-                </thead>
+              <div class="d-flex flex-wrap gap-2 mt-3">
+                <button type="button" class="btn btn-ghost" id="addRowBtn">+ Tambah Matkul</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">Hitung IPK</button>
+                <button type="button" class="btn btn-outline-danger" id="resetBtn">Reset Data</button>
+              </div>
 
-                <tbody id="tableBody"></tbody>
-              </table>
+              <p id="saveIndicator" class="save-indicator mt-2 mb-0"></p>
             </div>
-
-            <div class="actions-row">
-              <button
-                type="button"
-                class="btn btn-ghost"
-                id="addRowBtn"
-              >
-                + Tambah Mata Kuliah
-              </button>
-
-              <button
-                type="submit"
-                class="btn btn-primary"
-                id="submitBtn"
-              >
-                Hitung IPK
-              </button>
-
-              <button
-                type="button"
-                class="btn btn-danger"
-                id="resetBtn"
-              >
-                Reset Data
-              </button>
-            </div>
-
-            <p
-              id="saveIndicator"
-              class="save-indicator"
-              aria-live="polite"
-            ></p>
           </div>
         </form>
 
-        <!-- Hasil Perhitungan -->
-        <div
-          class="card"
-          id="resultCard"
-          style="display: none;"
-        >
-          <div class="result">
-            <span>Hasil IPK kamu:</span>
-            <span class="ipk-value" id="ipkValue">0.00</span>
+        <div class="card shadow-sm mb-4" id="resultCard" style="display: none;">
+          <div class="card-body text-center">
+            <span class="fs-5 me-2">Hasil IPK kamu:</span>
+            <span class="fw-bold text-primary display-6" id="ipkValue">0.00</span>
           </div>
         </div>
 
-        <!-- Riwayat Perhitungan -->
-        <div class="card" id="historyCard">
-          <div class="history-header">
-            <strong>Riwayat Perhitungan IPK</strong>
-
-            <button
-              type="button"
-              class="btn btn-danger"
-              id="clearHistoryBtn"
-            >
-              Hapus Riwayat
-            </button>
+        <div class="card shadow-sm mb-4" id="historyCard">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <strong class="h6 mb-0">Riwayat Perhitungan IPK</strong>
+              <button type="button" class="btn btn-outline-danger btn-sm" id="clearHistoryBtn">Hapus Riwayat</button>
+            </div>
+            <div id="historyList">
+              <p class="text-muted mb-0 small" id="historyEmpty">Belum ada riwayat perhitungan.</p>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div id="historyList" class="history-list">
-            <p class="hint" id="historyEmpty">
-              Belum ada riwayat perhitungan.
+      <!-- Menu Panduan -->
+      <section class="app-view" id="guideView" hidden>
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h2 class="h5 fw-bold mb-2">Panduan Bobot Nilai</h2>
+            <p class="text-muted small mb-3">Berikut bobot nilai yang digunakan oleh kalkulator ini.</p>
+
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>Nilai</th>
+                    <th>Bobot</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>A</td><td>4.0</td></tr>
+                  <tr><td>A-</td><td>3.7</td></tr>
+                  <tr><td>B+</td><td>3.3</td></tr>
+                  <tr><td>B</td><td>3.0</td></tr>
+                  <tr><td>B-</td><td>2.7</td></tr>
+                  <tr><td>C+</td><td>2.3</td></tr>
+                  <tr><td>C</td><td>2.0</td></tr>
+                  <tr><td>D</td><td>1.0</td></tr>
+                  <tr><td>E</td><td>0.0</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h2 class="h5 fw-bold mb-3">Cara Menghitung IPK</h2>
+            <ol class="ps-3 mb-3 small">
+              <li class="mb-1">Masukkan nama mata kuliah dan jumlah SKS.</li>
+              <li class="mb-1">Pilih nilai untuk setiap mata kuliah.</li>
+              <li class="mb-1">Tekan tombol <strong>Hitung IPK</strong>.</li>
+              <li class="mb-1">Hasil perhitungan akan muncul dan tersimpan di riwayat.</li>
+            </ol>
+            <p class="p-3 bg-light rounded text-center fw-semibold small mb-0">
+              IPK = Total (SKS × Bobot Nilai) ÷ Total SKS
             </p>
           </div>
         </div>
       </section>
 
-      <!-- Halaman Panduan Nilai -->
-      <section class="app-view" id="guideView" hidden>
-        <div class="card">
-          <h2>Panduan Bobot Nilai</h2>
-
-          <p class="section-desc">
-            Berikut bobot nilai yang digunakan oleh kalkulator ini.
-          </p>
-
-          <div class="table-scroll">
-            <table class="grade-table">
-              <thead>
-                <tr>
-                  <th>Nilai</th>
-                  <th>Bobot</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr>
-                  <td>A</td>
-                  <td>4.0</td>
-                </tr>
-                <tr>
-                  <td>A-</td>
-                  <td>3.7</td>
-                </tr>
-                <tr>
-                  <td>B+</td>
-                  <td>3.3</td>
-                </tr>
-                <tr>
-                  <td>B</td>
-                  <td>3.0</td>
-                </tr>
-                <tr>
-                  <td>B-</td>
-                  <td>2.7</td>
-                </tr>
-                <tr>
-                  <td>C+</td>
-                  <td>2.3</td>
-                </tr>
-                <tr>
-                  <td>C</td>
-                  <td>2.0</td>
-                </tr>
-                <tr>
-                  <td>D</td>
-                  <td>1.0</td>
-                </tr>
-                <tr>
-                  <td>E</td>
-                  <td>0.0</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>Cara Menghitung IPK</h2>
-
-          <p>1. Masukkan nama mata kuliah dan jumlah SKS.</p>
-          <p>2. Pilih nilai untuk setiap mata kuliah.</p>
-          <p>3. Tekan tombol <strong>Hitung IPK</strong>.</p>
-          <p>4. Hasil perhitungan akan muncul dan tersimpan di riwayat.</p>
-
-          <p class="formula">
-            IPK = Total (SKS × Bobot Nilai) ÷ Total SKS
-          </p>
-        </div>
-      </section>
-
-      <!-- Halaman Tentang -->
+      <!-- Menu Tentang -->
       <section class="app-view" id="aboutView" hidden>
-        <div class="card about-card">
-
-          <!-- Ikon Ilustrasi -->
-          <div class="about-icon" aria-hidden="true">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 64 64"
-              width="64"
-              height="64"
-              fill="none"
-            >
-              <rect
-                width="64"
-                height="64"
-                rx="18"
-                fill="#E8EAFE"
-              />
-
-              <path
-                d="M10 25L32 14L54 25L32 36L10 25Z"
-                fill="#4F46E5"
-              />
-
-              <path
-                d="M19 30V41C26 47 38 47 45 41V30L32 37L19 30Z"
-                fill="#818CF8"
-              />
-
-              <path
-                d="M53 26V39"
-                stroke="#3730A3"
-                stroke-width="3"
-                stroke-linecap="round"
-              />
-
-              <circle
-                cx="53"
-                cy="43"
-                r="3"
-                fill="#3730A3"
-              />
-            </svg>
+        <div class="card shadow-sm mb-4">
+          <div class="card-body text-center py-4">
+            <h2 class="h5 fw-bold mb-2">Tentang CUMALATOR</h2>
+            <p class="text-muted small mb-3">
+              CUMALATOR adalah aplikasi untuk membantu mahasiswa memperkirakan IPK berdasarkan SKS dan nilai mata kuliah.
+            </p>
+            <button type="button" class="btn btn-primary" data-go-view="calculatorView">Mulai Hitung IPK</button>
           </div>
-
-          <h2>Tentang CUMALATOR</h2>
-
-          <p>
-            CUMALATOR adalah aplikasi sederhana untuk membantu
-            mahasiswa memperkirakan Indeks Prestasi Kumulatif berdasarkan
-            SKS dan nilai mata kuliah yang dimasukkan.
-          </p>
-
-          <h3>Fitur aplikasi</h3>
-
-          <ul>
-            <li>Menghitung IPK berdasarkan bobot nilai dan SKS.</li>
-            <li>Menambahkan beberapa mata kuliah.</li>
-            <li>Menyimpan data dan riwayat perhitungan di browser.</li>
-            <li>Melihat panduan bobot nilai yang digunakan.</li>
-          </ul>
-
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-go-view="calculatorView"
-          >
-            Mulai Hitung IPK
-          </button>
         </div>
       </section>
-
     </main>
 
-    <!-- Footer -->
-    <footer>
+    <footer class="text-center text-muted small mt-4">
       Total SKS dan bobot nilai dihitung berdasarkan data yang kamu masukkan.
     </footer>
-
   </div>
 
-  <!-- Tooltip -->
-  <div class="tooltip" id="tooltip"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="src/script.js"></script>
 
-  <!-- JavaScript utama -->
-  <script src="script.js"></script>
-
-  <!-- Navigasi dan Animasi Halaman -->
   <script>
-    (() => {
-      const navButtons = document.querySelectorAll(".nav-btn");
-      const views = document.querySelectorAll(".app-view");
+    // Navigasi sederhana antar halaman
+    const tombolNav = document.querySelectorAll('.nav-btn');
+    const semuaHalaman = document.querySelectorAll('.app-view');
 
-      const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      );
+    function pindahHalaman(idTarget) {
+      semuaHalaman.forEach(hal => {
+        if (hal.id === idTarget) {
+          hal.hidden = false;
+          hal.classList.add('active');
+        } else {
+          hal.hidden = true;
+          hal.classList.remove('active');
+        }
+      });
 
-      function showView(viewId) {
-        const target = document.getElementById(viewId);
-
-        if (!target) return;
-
-        // Tampilkan halaman yang dipilih
-        views.forEach((view) => {
-          const isTarget = view.id === viewId;
-
-          view.hidden = !isTarget;
-          view.classList.toggle("active", isTarget);
-        });
-
-        // Perbarui navigasi aktif
-        navButtons.forEach((button) => {
-          const isActive = button.dataset.view === viewId;
-
-          button.classList.toggle("active", isActive);
-
-          if (isActive) {
-            button.setAttribute("aria-current", "page");
-          } else {
-            button.removeAttribute("aria-current");
-          }
-        });
-
-        // Animasi transisi halaman
-if (
-  !reducedMotion.matches &&
-  typeof target.animate === "function"
-) {
-  target.animate(
-    [
-      {
-        opacity: 0,
-        transform: "translateY(24px)"
-      },
-      {
-        opacity: 1,
-        transform: "translateY(0)"
-      }
-    ],
-    {
-      duration: 600,
-      easing: "ease-out"
+      tombolNav.forEach(btn => {
+        if (btn.dataset.view === idTarget) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
     }
-  );
-}
-        // Kembali ke bagian atas halaman
-        window.scrollTo({
-          top: 0,
-          behavior: reducedMotion.matches ? "auto" : "smooth"
-        });
-      }
 
-      // Navigasi melalui menu utama
-      navButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          showView(button.dataset.view);
-        });
-      });
+    tombolNav.forEach(btn => {
+      btn.addEventListener('click', () => pindahHalaman(btn.dataset.view));
+    });
 
-      // Navigasi melalui tombol di dalam halaman
-      document.querySelectorAll("[data-go-view]").forEach((button) => {
-        button.addEventListener("click", () => {
-          showView(button.dataset.goView);
-        });
-      });
-    })();
+    document.querySelectorAll('[data-go-view]').forEach(btn => {
+      btn.addEventListener('click', () => pindahHalaman(btn.dataset.goView));
+    });
   </script>
-
 </body>
 </html>
