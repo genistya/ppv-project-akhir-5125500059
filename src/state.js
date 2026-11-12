@@ -33,7 +33,10 @@ export function simpanDaftarMatkul(data) {
 }
 
 export function muatDaftarMatkul() {
-  return muatAman(STORAGE_KEY, []);
+  const data = muatAman(STORAGE_KEY, []);
+  return data.filter(
+    (item) => item && typeof item === 'object' && typeof item.nama === 'string'
+  );
 }
 
 export function hapusDaftarMatkul() {
@@ -45,7 +48,14 @@ export function hapusDaftarMatkul() {
 }
 
 export function muatRiwayat() {
-  return muatAman(HISTORY_KEY, []);
+  const data = muatAman(HISTORY_KEY, []);
+  return data.filter(
+    (item) =>
+      item &&
+      typeof item === 'object' &&
+      typeof item.tanggal === 'string' &&
+      typeof item.ipk === 'string'
+  );
 }
 
 export function tambahRiwayat(ipk, totalSks) {

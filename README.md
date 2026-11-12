@@ -41,3 +41,10 @@ Asisten AI (Gemini) digunakan sebagai rekan diskusi dan pembimbing selama proses
 - Audit struktur proyek dan sinkronisasi ID antara `index.html` dengan modul JavaScript.
 - Pemisahan (*refactoring*) kode ke dalam arsitektur ES6 Modules (`main.js`, `state.js`, `ui.js`), penerapan *Safe Storage* (`try/catch`), serta render DOM aman tanpa `innerHTML`.
 - Penyusunan dan penyelarasan dokumentasi teknis proyek untuk Sprint 4.
+
+## Kontrak Komponen dan Penyimpanan
+- **`state.js` › `STORAGE_KEY` & `HISTORY_KEY`**: Kunci berversi `'cumalator:data:v1'` dan `'cumalator:history:v1'`.
+- **`state.js` › `muatDaftarMatkul()` & `muatRiwayat()`**: Membaca `localStorage` dalam blok `try/catch`, menyaring elemen yang tidak valid, dan mengembalikan `array` kosong jika data rusak atau penyimpanan diblokir.
+- **`state.js` › `simpanDaftarMatkul(data)` & `tambahRiwayat(ipk, totalSks)`**: Menyimpan data JSON ke `localStorage` dengan `try/catch` tanpa melempar galat saat kuota penuh.
+- **`ui.js` › `buatBarisMatkul({ nama, sks, nilai, onSimpan, onTambahBaris, tooltipEl })`**: Mengembalikan elemen `<tr>` (`HTMLElement`) berisi input mata kuliah, SKS, pilihan nilai, dan tombol hapus; seluruh nilai teks pengguna diatur melalui `.value` dan `.textContent` (bebas dari `innerHTML`).
+- **`ui.js` › `renderDaftarRiwayat(riwayat, containerEl)`**: Merender daftar riwayat perhitungan menggunakan `document.createElement` dan `textContent`.
