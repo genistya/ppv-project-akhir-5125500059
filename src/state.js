@@ -1,46 +1,97 @@
-const KEY_STORAGE = 'cumalator_data';
+export const BOBOT_NILAI = {
+  "A": 4.0, "A-": 3.7, "B+": 3.3, "B": 3.0, "B-": 2.7,
+  "C+": 2.3, "C": 2.0, "D": 1.0, "E": 0.0
+};
 
-let daftarMatkul = [];
+const STORAGE_KEY = 'cumalator:data:v1';
+const HISTORY_KEY = 'cumalator:history:v1';
 
-export function muatState() {
-  daftarMatkul = JSON.parse(localStorage.getItem(KEY_STORAGE)) || [];
-  return daftarMatkul;
+export function simpanAman(kunci, nilai) {
+  try {
+    localStorage.setItem(kunci, JSON.stringify(nilai));
+    return true;
+  } catch (err) {
+    console.warn(`Gagal menyimpan ke localStorage (${kunci}):`, err);
+    return false;
+  }
 }
 
-export function simpanState() {
-  localStorage.setItem(KEY_STORAGE, JSON.stringify(daftarMatkul));
+export function muatAman(kunci, nilaiDefault) {
+  try {
+    const mentah = localStorage.getItem(kunci);
+    if (!mentah) return nilaiDefault;
+    const hasil = JSON.parse(mentah);
+    return Array.isArray(hasil) ? hasil : nilaiDefault;
+  } catch (err) {
+    console.warn(`Data rusak/tidak terbaca di ${kunci}, memakai default:`, err);
+    return nilaiDefault;
+  }
 }
 
-export function dapatkanSemuaMatkul() {
-  return daftarMatkul;
+export function simpanDaftarMatkul(data) {
+  return simpanAman(STORAGE_KEY, data);
 }
 
-export function tambahMatkul(nama, sks, nilai) {
-  const baru = {
-    id: Date.now(),
-    nama: nama,
-    sks: Number(sks),
-    nilai: Number(nilai)
-  };
-  daftarMatkul.push(baru);
-  simpanState();
-  return baru;
+export function muatDaftarMatkul() {
+  return muatAman(STORAGE_KEY, []);
 }
 
-export function hapusMatkul(id) {
-  daftarMatkul = daftarMatkul.filter(m => m.id !== id);
-  simpanState();
+export function hapusDaftarMatkul() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (err) {
+    console.warn(err);
+  }
 }
 
-export function hitungRingkasan() {
-  let totalSKS = 0;
-  let totalBobot = 0;
+export function muatRiwayat() {
+  return muatAman(HISTORY_KEY, []);
+}
 
-  daftarMatkul.forEach(m => {
-    totalSKS += m.sks;
-    totalBobot += m.sks * m.nilai;
+export function tambahRiwayat(ipk, totalSks) {
+  const riwayat = muatRiwayat();
+  const tanggal = new Date().toLocaleString('id-ID', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
   });
 
-  const ipk = totalSKS > 0 ? (totalBobot / totalSKS).toFixed(2) : '0.00';
-  return { totalSKS, totalBobot: totalBobot.toFixed(2), ipk };
+  riwayat.unshift({ tanggal, ipk, totalSks });
+  const dibatasi = riwayat.slice(0, 20);
+  simpanAman(HISTORY_KEY, dibatasi);
+  return dibatasi;
+}
+
+export function hapusSemuaRiwayat() {
+  try {
+    localStorage.removeItem(HISTORY_KEY);
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
+export function hitungIPK(daftarMatkul) {
+  let totalSks = 0;
+  let totalBobot = 0;
+
+  for (const item of daftarMatkul) {
+    const sks = parseFloat(item.sks);
+    const bobot = BOBOT_NILAI[item.nilai];
+
+    if (!Number.isFinite(sks) || sks <= 0 || bobot === undefined) {
+      return { valid: false, ipk: '0.00', totalSks: 0 };
+    }
+
+    totalSks += sks;
+    totalBobot += sks * bobot;
+  }
+
+  if (daftarMatkul.length === 0 || totalSks === 0) {
+    return { valid: false, ipk: '0.00', totalSks: 0 };
+  }
+
+  const ipk = (totalBobot / totalSks).toFixed(2);
+  return { valid: true, ipk, totalSks };
 }
