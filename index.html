@@ -148,6 +148,26 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Kit demo: aktif hanya jika alamat berakhiran ?demo=1 (Demo Akhir TB033109) -->
+  <script>
+    window.DEMO_KIT = {
+      kunciStorage: ['cumalator:data:v1', 'cumalator:history:v1'],
+      isiContoh() {
+        const contoh = [
+          { nama: 'Pemrograman Visual', sks: 3, nilai: 'A' },
+          { nama: 'Animasi 2D', sks: 3, nilai: 'A-' },
+          { nama: 'Videografi', sks: 3, nilai: 'B+' },
+          { nama: 'Sistem Multimedia', sks: 2, nilai: 'A' },
+          { nama: 'Bahasa Inggris', sks: 2, nilai: 'B+' },
+          { nama: 'Kewirausahaan', sks: 2, nilai: 'A-' }
+        ];
+        localStorage.setItem('cumalator:data:v1', JSON.stringify(contoh));
+        // riwayat dikosongkan agar sisa uji coba tidak ikut tampil saat demo
+        localStorage.removeItem('cumalator:history:v1');
+      }
+    };
+  </script>
+  <script src="demo-kit.js"></script>
   <script type="module" src="src/main.js"></script>
 </body>
 </html>

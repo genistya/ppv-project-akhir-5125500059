@@ -197,9 +197,8 @@ function init() {
   if (dataTersimpan.length > 0) {
     dataTersimpan.forEach((item) => tambahBaris(false, item));
   } else {
-    tambahBaris(false, { nama: 'Kalkulus I', sks: 3, nilai: 'A' });
-    tambahBaris(false, { nama: 'Pemrograman Dasar', sks: 4, nilai: 'A-' });
-    tambahBaris(false, { nama: 'Bahasa Inggris', sks: 2, nilai: 'B+' });
+    // Pengguna baru: mulai dari satu baris kosong (sama seperti setelah Reset Data)
+    tambahBaris();
   }
 }
 
